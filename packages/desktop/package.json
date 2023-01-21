@@ -1,0 +1,60 @@
+{
+  "name": "@onekeyhq/desktop",
+  "main": "__generated__/AppEntry.js",
+  "version": "0.0.1",
+  "description": "Multi-chain support for BTC/ETH/BNB/NEAR/Polygon/Solana/Avalanche/Fantom and others",
+  "private": true,
+  "author": "OneKey <hi@onekey.so>",
+  "scripts": {
+    "postinstall": "expo-yarn-workspaces postinstall",
+    "lint": "tsc --noEmit && eslint . --ext .ts,.tsx",
+    "dev": "npx concurrently \"yarn build:main\" \"yarn dev:renderer\" \"cross-env LAUNCH_ELECTRON=true node scripts/dev.js\"",
+    "dev:main": "electron --inspect=5858 dist/app.js",
+    "dev:renderer": "TRANSFORM_REGENERATOR_DISABLED=true BROWSER=none WEB_PORT=3001 expo start --web --port 19001",
+    "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist && rimraf node_modules && rimraf .expo && rimraf __generated__",
+    "clean:build": "rimraf ./build-electron && rimraf ./build && rimraf ./dist && rimraf .expo",
+    "build:renderer": "rm -rf ./build && rm -rf ./web-build && expo build:web && mv ./web-build ./build && rsync -a public/static/ build/static",
+    "build:main": "rm -rf ./dist && cross-env NODE_ENV=production && node scripts/build.js",
+    "build:electron": "electron-builder build -mwl --config electron-builder.config.js",
+    "build:electron:mac": "electron-builder build -m --config electron-builder.config.js",
+    "build:electron:mas": "electron-builder build -m --config electron-builder-mas.config.js",
+    "build": "NODE_ENV=production sh -c \"yarn clean:build && yarn build:renderer && yarn build:main && yarn build:electron --publish never\"",
+    "build:mac": "NODE_ENV=production sh -c \"yarn clean:build && yarn build:renderer && yarn build:main && yarn build:electron:mac --publish never\"",
+    "build:mas": "NODE_ENV=production sh -c \"yarn clean:build && yarn build:renderer && yarn build:main && yarn build:electron:mas --publish never\"",
+    "publish:all": "NODE_ENV=production sh -c \"yarn clean:build && yarn build:renderer && yarn build:main && yarn build:electron --publish always\""
+  },
+  "expo-yarn-workspaces": {
+    "symlinks": [
+      "expo-yarn-workspaces"
+    ]
+  },
+  "dependencies": {
+    "@onekeyhq/components": "*",
+    "@onekeyhq/kit": "*",
+    "adm-zip": "^0.5.10",
+    "electron-config": "^2.0.0",
+    "electron-context-menu": "^3.5.0",
+    "electron-is-dev": "^2.0.0",
+    "electron-log": "^4.4.8",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^5.2.1",
+    "expo": "^45.0.5",
+    "expo-yarn-workspaces": "2.0.3",
+    "keytar": "^7.9.0",
+    "node-fetch": "^2.6.7",
+    "react-native-web": "0.18.10",
+    "rimraf": "^3.0.2"
+  },
+  "devDependencies": {
+    "@electron/remote": "^2.0.1",
+    "@types/adm-zip": "^0",
+    "@types/electron-localshortcut": "^3.1.0",
+    "@types/node-fetch": "^2.6.1",
+    "cross-env": "^7.0.3",
+    "electron": "19.1.8",
+    "electron-builder": "22.14.13",
+    "electron-notarize": "^1.1.1",
+    "esbuild": "^0.15.11",
+    "glob": "^7.2.0"
+  }
+}

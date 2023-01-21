@@ -1,0 +1,26 @@
+diff --git a/node_modules/@react-navigation/native-stack/src/views/NativeStackView.native.tsx b/node_modules/@react-navigation/native-stack/src/views/NativeStackView.native.tsx
+index 9c7455f..dfc2d3b 100644
+--- a/node_modules/@react-navigation/native-stack/src/views/NativeStackView.native.tsx
++++ b/node_modules/@react-navigation/native-stack/src/views/NativeStackView.native.tsx
+@@ -317,10 +317,20 @@ function NativeStackViewInner({ state, navigation, descriptors }: Props) {
+   );
+ }
+ 
++import { RootSiblingParent } from 'react-native-root-siblings';
++import { useIsVerticalLayout } from '@onekeyhq/components';
++
+ export default function NativeStackView(props: Props) {
++  const isVerticalLayout = useIsVerticalLayout();
+   return (
+     <SafeAreaProviderCompat>
+-      <NativeStackViewInner {...props} />
++      {isVerticalLayout ? (
++        <RootSiblingParent>
++          <NativeStackViewInner {...props} />
++        </RootSiblingParent>
++      ) : (
++        <NativeStackViewInner {...props} />
++      )}
+     </SafeAreaProviderCompat>
+   );
+ }
